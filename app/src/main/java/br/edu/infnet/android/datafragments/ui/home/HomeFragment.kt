@@ -6,11 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import br.edu.infnet.android.datafragments.databinding.FragmentHomeBinding
+import br.edu.infnet.android.datafragments.viewmodel.TextoViewModel
 
 class HomeFragment : Fragment() {
 
+    private  val _textoViewModel: TextoViewModel by activityViewModels()
     private var _binding: FragmentHomeBinding? = null
 
     // This property is only valid between onCreateView and
@@ -23,7 +26,7 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val homeViewModel =
-            ViewModelProvider(this).get(HomeViewModel::class.java)
+            ViewModelProvider(this)[HomeViewModel::class.java]
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
@@ -31,6 +34,16 @@ class HomeFragment : Fragment() {
         val textView: TextView = binding.textHome
         homeViewModel.text.observe(viewLifecycleOwner) {
             textView.text = it
+        }
+        _binding!!.button.setOnClickListener {
+            _ ->
+            val texto = binding.editTextTextPersonName.text.toString()
+            if(texto.isNotEmpty()){
+                _textoViewModel.changeText(texto)
+            }else{
+                _binding!!.editTextTextPersonName.error = "entre com um valor"
+            }
+
         }
         return root
     }
