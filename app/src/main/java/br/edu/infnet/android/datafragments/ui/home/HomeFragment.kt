@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import br.edu.infnet.android.datafragments.MainActivity
 import br.edu.infnet.android.datafragments.databinding.FragmentHomeBinding
 
 class HomeFragment : Fragment() {
@@ -16,6 +17,7 @@ class HomeFragment : Fragment() {
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+    private var texto:String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -23,7 +25,7 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val homeViewModel =
-            ViewModelProvider(this).get(HomeViewModel::class.java)
+            ViewModelProvider(this)[HomeViewModel::class.java]
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
@@ -31,6 +33,12 @@ class HomeFragment : Fragment() {
         val textView: TextView = binding.textHome
         homeViewModel.text.observe(viewLifecycleOwner) {
             textView.text = it
+        }
+        _binding!!.button.setOnClickListener {
+            _ ->
+            texto = _binding!!.editText.text.trim().toString()
+            var atividade = activity as MainActivity?
+            atividade!!.textoPassado = texto
         }
         return root
     }

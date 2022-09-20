@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import br.edu.infnet.android.datafragments.MainActivity
 import br.edu.infnet.android.datafragments.databinding.FragmentDashboardBinding
 
 class DashboardFragment : Fragment() {
@@ -22,8 +23,10 @@ class DashboardFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
+
         val dashboardViewModel =
-            ViewModelProvider(this).get(DashboardViewModel::class.java)
+            ViewModelProvider(this)[DashboardViewModel::class.java]
 
         _binding = FragmentDashboardBinding.inflate(inflater, container, false)
         val root: View = binding.root
@@ -32,6 +35,8 @@ class DashboardFragment : Fragment() {
         dashboardViewModel.text.observe(viewLifecycleOwner) {
             textView.text = it
         }
+        var atividade = activity as MainActivity?
+        _binding!!.textView.text = atividade!!.textoPassado.toString()
         return root
     }
 
