@@ -5,7 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.ViewModelProvider
 import br.edu.infnet.android.datafragments.databinding.FragmentHomeBinding
 
@@ -31,6 +33,11 @@ class HomeFragment : Fragment() {
         val textView: TextView = binding.textHome
         homeViewModel.text.observe(viewLifecycleOwner) {
             textView.text = it
+        }
+        _binding!!.button.setOnClickListener {
+            _ ->
+            val result = _binding!!.editTextTextPersonName.text.toString()
+            setFragmentResult("requestKey", bundleOf("bundleKey" to result))
         }
         return root
     }
