@@ -1,6 +1,13 @@
 package br.edu.infnet.android.datafragments.adapter
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.os.AsyncTask
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
 import android.view.ViewGroup
 import br.edu.infnet.android.datafragments.model.LinguagemModel
 import android.view.LayoutInflater
@@ -10,6 +17,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import br.edu.infnet.android.datafragments.R
 import br.edu.infnet.android.datafragments.ui.notifications.NotificationsFragment
+import java.util.concurrent.Executors
 
 class LinguagemRecyclerViewAdapter(
     // on below line we are passing variables
@@ -17,7 +25,9 @@ class LinguagemRecyclerViewAdapter(
     private val courseList: ArrayList<LinguagemModel>,
     private val context: NotificationsFragment
     ) : RecyclerView.Adapter<LinguagemRecyclerViewAdapter.LinguagemViewHolder>() {
-        override fun onCreateViewHolder(
+    val executor = Executors.newSingleThreadExecutor()
+    val handler = Handler(Looper.getMainLooper())
+    override fun onCreateViewHolder(
             parent: ViewGroup,
             viewType: Int
         ): LinguagemRecyclerViewAdapter.LinguagemViewHolder {
@@ -36,7 +46,12 @@ class LinguagemRecyclerViewAdapter(
         override fun onBindViewHolder(holder: LinguagemRecyclerViewAdapter.LinguagemViewHolder, position: Int) {
             // on below line we are setting data to our text view and our image view.
             holder.courseNameTV.text = courseList.get(position).linguagemName
-            holder.courseIV.setImageResource(courseList.get(position).linguagemImg)
+
+            DownloadImageFromInternet(holder.courseIV).execute(courseList.get(position).linguagemImg)
+
+
+
+            //holder.courseIV.setImageResource(courseList.get(position).linguagemImg)
         }
 
         override fun getItemCount(): Int {
@@ -51,4 +66,27 @@ class LinguagemRecyclerViewAdapter(
             val courseNameTV: TextView = itemView.findViewById(R.id.idTVLinguagem)
             val courseIV: ImageView = itemView.findViewById(R.id.idIVLinguagem)
         }
+    @SuppressLint("StaticFieldLeak")
+    @Suppress("DEPRECATION")
+    private inner class DownloadImageFromInternet(var imageView: ImageView) : AsyncTask<String, Void, Bitmap?>() {
+        init {
+           // Toast.makeText(applicationContext, "Please wait, it may take a few minute...",     Toast.LENGTH_SHORT).show()
+        }
+        override fun doInBackground(vararg urls: String): Bitmap? {
+            val imageURL = urls[0]
+            var image: Bitmap? = null
+            try {
+                val `in` = java.net.URL(imageURL).openStream()
+                image = BitmapFactory.decodeStream(`in`)
+            }
+            catch (e: Exception) {
+                Log.e("Error Message", e.message.toString())
+                e.printStackTrace()
+            }
+            return image
+        }
+        override fun onPostExecute(result: Bitmap?) {
+            imageView.setImageBitmap(result)
+        }
+    }
 }
