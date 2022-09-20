@@ -4,10 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.RecyclerView
+import br.edu.infnet.android.datafragments.R
+import br.edu.infnet.android.datafragments.adapter.LinguagemRecyclerViewAdapter
 import br.edu.infnet.android.datafragments.databinding.FragmentNotificationsBinding
+import br.edu.infnet.android.datafragments.model.LinguagemModel
 
 class NotificationsFragment : Fragment() {
 
@@ -17,21 +19,47 @@ class NotificationsFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
+    lateinit var linguagemRV: RecyclerView
+    lateinit var linguagemRVAdapter: LinguagemRecyclerViewAdapter
+    lateinit var linguagemList: ArrayList<LinguagemModel>
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val notificationsViewModel =
-            ViewModelProvider(this).get(NotificationsViewModel::class.java)
+
 
         _binding = FragmentNotificationsBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textNotifications
-        notificationsViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
-        }
+        linguagemRV = _binding!!.rvLinguagens
+        linguagemList = ArrayList()
+        linguagemRVAdapter = LinguagemRecyclerViewAdapter(linguagemList, this)
+        linguagemRV.adapter = linguagemRVAdapter
+
+        linguagemList.add(LinguagemModel("Android 1", R.drawable.android))
+        linguagemList.add(LinguagemModel("C++ ", R.drawable.c))
+        linguagemList.add(LinguagemModel("Java 1", R.drawable.java))
+
+        linguagemList.add(LinguagemModel("Android 2", R.drawable.android))
+
+        linguagemList.add(LinguagemModel("Java 2", R.drawable.java))
+        linguagemList.add(LinguagemModel("Android 3", R.drawable.android))
+
+        linguagemList.add(LinguagemModel("Python ", R.drawable.python))
+        linguagemList.add(LinguagemModel("Java 5", R.drawable.java))
+
+        linguagemList.add(LinguagemModel("Android 4", R.drawable.android))
+
+        linguagemList.add(LinguagemModel("JavaScript ", R.drawable.js))
+        linguagemList.add(LinguagemModel("Java 8", R.drawable.java))
+
+        linguagemRVAdapter.notifyDataSetChanged()
+
+
+
+
         return root
     }
 
