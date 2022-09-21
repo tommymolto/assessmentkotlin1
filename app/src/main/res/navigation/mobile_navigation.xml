@@ -25,5 +25,12 @@
     <fragment
         android:id="@+id/navigation_linguagem"
         android:name="br.edu.infnet.android.datafragments.ui.LinguagemFragment"
-        android:label="fragment_linguagem_fragment" />
+        android:label="fragment_linguagem_fragment" >
+        <action
+            android:id="@+id/action_navigation_linguagem_to_navigation_notifications"
+            app:destination="@id/navigation_notifications"
+            app:launchSingleTop="true"
+            app:popUpTo="@id/navigation_notifications"
+            app:popUpToInclusive="true" />
+    </fragment>
 </navigation>

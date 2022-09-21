@@ -1,7 +1,7 @@
 package br.edu.infnet.android.datafragments.ui
 
 import android.Manifest
-import android.R.attr.defaultValue
+import android.R
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -9,13 +9,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.text.isDigitsOnly
 import androidx.fragment.app.Fragment
-import br.edu.infnet.android.datafragments.R
-import br.edu.infnet.android.datafragments.adapter.LinguagemRecyclerViewAdapter
-import br.edu.infnet.android.datafragments.databinding.FragmentHomeBinding
 import br.edu.infnet.android.datafragments.databinding.FragmentLinguagemBinding
 import com.google.android.material.snackbar.Snackbar
 
@@ -85,6 +83,15 @@ class LinguagemFragment : Fragment() {
             }
 
         }
+
+        //back
+        val toolbar = binding!!.toolbar
+        toolbar.setNavigationIcon(br.edu.infnet.android.datafragments.R.drawable.ic_action_back)
+        toolbar.setNavigationOnClickListener(View.OnClickListener { requireActivity().onBackPressed() })
+
+
+        //back 2
+
         return root
     }
     fun checkPermission() : Boolean{
