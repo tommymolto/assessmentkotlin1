@@ -46,7 +46,9 @@ class NotificationsFragment : Fragment() {
             linguagemList,
             this,
             LinguagemRecyclerViewAdapter.OnClickListener { item ->
-                Toast.makeText(context, "${item.linguagemName}", Toast.LENGTH_SHORT).show() })
+                acaoClickListView(item)
+                //Toast.makeText(context, "${item.linguagemName}", Toast.LENGTH_SHORT).show()
+                })
         linguagemRV.adapter = linguagemRVAdapter
 
         linguagemList.add(LinguagemModel("Android 1",  "https://img.ibxk.com.br/2014/05/08/08145827911459.png?ims=704x"))
@@ -120,7 +122,7 @@ class NotificationsFragment : Fragment() {
         return root
     }
     fun acaoClickListView(item: LinguagemModel){
-
+        Toast.makeText(context, item.linguagemName, Toast.LENGTH_SHORT).show()
     }
     override fun onDestroyView() {
         super.onDestroyView()
