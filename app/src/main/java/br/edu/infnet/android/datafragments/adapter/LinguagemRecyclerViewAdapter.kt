@@ -89,7 +89,7 @@ class LinguagemRecyclerViewAdapter(
     }
     @SuppressLint("StaticFieldLeak")
     @Suppress("DEPRECATION")
-    private inner class DownloadImageFromInternet(var imageView: ImageView) : AsyncTask<String, Void, Bitmap?>() {
+    public class DownloadImageFromInternet(var imageView: ImageView) : AsyncTask<String, Void, Bitmap?>() {
         init {
            // Toast.makeText(applicationContext, "Please wait, it may take a few minute...",     Toast.LENGTH_SHORT).show()
         }

@@ -8,6 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import br.edu.infnet.android.datafragments.R
@@ -122,6 +124,12 @@ class NotificationsFragment : Fragment() {
         return root
     }
     fun acaoClickListView(item: LinguagemModel){
+        val bundle = Bundle()
+        bundle.putString("linguagemName",item.linguagemName)
+        bundle.putString("linguagemImg",item.linguagemImg)
+
+        findNavController()
+            .navigate(R.id.navigation_linguagem, bundle)
         Toast.makeText(context, item.linguagemName, Toast.LENGTH_SHORT).show()
     }
     override fun onDestroyView() {
