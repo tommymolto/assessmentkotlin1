@@ -84,13 +84,7 @@ class LinguagemFragment : Fragment() {
 
         }
 
-        //back
-        val toolbar = binding!!.toolbar
-        toolbar.setNavigationIcon(br.edu.infnet.android.datafragments.R.drawable.ic_action_back)
-        toolbar.setNavigationOnClickListener(View.OnClickListener { requireActivity().onBackPressed() })
 
-
-        //back 2
 
         return root
     }
