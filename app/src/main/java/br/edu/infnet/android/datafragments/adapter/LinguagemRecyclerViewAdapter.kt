@@ -14,6 +14,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import br.edu.infnet.android.datafragments.R
 import br.edu.infnet.android.datafragments.ui.notifications.NotificationsFragment
@@ -23,7 +24,8 @@ class LinguagemRecyclerViewAdapter(
     // on below line we are passing variables
     // as course list and context
     private val courseList: ArrayList<LinguagemModel>,
-    private val context: NotificationsFragment
+    private val context: NotificationsFragment,
+    private val onClickListener: OnClickListener
     ) : RecyclerView.Adapter<LinguagemRecyclerViewAdapter.LinguagemViewHolder>() {
     val executor = Executors.newSingleThreadExecutor()
     val handler = Handler(Looper.getMainLooper())
@@ -45,8 +47,10 @@ class LinguagemRecyclerViewAdapter(
 
         override fun onBindViewHolder(holder: LinguagemRecyclerViewAdapter.LinguagemViewHolder, position: Int) {
             // on below line we are setting data to our text view and our image view.
-            holder.courseNameTV.text = courseList.get(position).linguagemName
-
+            holder.courseNameTV.text = courseList[position].linguagemName
+            holder.itemView.setOnClickListener {
+                onClickListener.onClick(courseList[position])
+            }
             DownloadImageFromInternet(holder.courseIV).execute(courseList.get(position).linguagemImg)
 
 
@@ -60,12 +64,29 @@ class LinguagemRecyclerViewAdapter(
             return courseList.size
         }
 
-        class LinguagemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        class LinguagemViewHolder(itemView: View,
+             ) : RecyclerView.ViewHolder(itemView) {
             // on below line we are initializing our course name
             // text view and our image view.
+
             val courseNameTV: TextView = itemView.findViewById(R.id.idTVLinguagem)
             val courseIV: ImageView = itemView.findViewById(R.id.idIVLinguagem)
+
+            init{
+                itemView.setOnClickListener { _ ->
+                    Toast.makeText(
+                        itemView!!.context,
+                        "Please wait, it may take a few minute...",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+
+
         }
+    class OnClickListener(val clickListener: (linguagem: LinguagemModel) -> Unit) {
+        fun onClick(linguagem: LinguagemModel) = clickListener(linguagem)
+    }
     @SuppressLint("StaticFieldLeak")
     @Suppress("DEPRECATION")
     private inner class DownloadImageFromInternet(var imageView: ImageView) : AsyncTask<String, Void, Bitmap?>() {

@@ -6,6 +6,7 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -41,7 +42,11 @@ class NotificationsFragment : Fragment() {
 
         linguagemRV = _binding!!.rvLinguagens
         linguagemList = ArrayList()
-        linguagemRVAdapter = LinguagemRecyclerViewAdapter(linguagemList, this)
+        linguagemRVAdapter = LinguagemRecyclerViewAdapter(
+            linguagemList,
+            this,
+            LinguagemRecyclerViewAdapter.OnClickListener { item ->
+                Toast.makeText(context, "${item.linguagemName}", Toast.LENGTH_SHORT).show() })
         linguagemRV.adapter = linguagemRVAdapter
 
         linguagemList.add(LinguagemModel("Android 1",  "https://img.ibxk.com.br/2014/05/08/08145827911459.png?ims=704x"))
@@ -114,7 +119,9 @@ class NotificationsFragment : Fragment() {
 
         return root
     }
+    fun acaoClickListView(item: LinguagemModel){
 
+    }
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
