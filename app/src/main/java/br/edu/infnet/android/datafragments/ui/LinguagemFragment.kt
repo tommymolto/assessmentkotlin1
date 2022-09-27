@@ -15,10 +15,13 @@ import androidx.core.content.ContextCompat
 import androidx.core.text.isDigitsOnly
 import androidx.fragment.app.Fragment
 import br.edu.infnet.android.datafragments.databinding.FragmentLinguagemBinding
+import br.edu.infnet.android.datafragments.helper.Permission
+import br.edu.infnet.android.datafragments.helper.PermissionManager
 import com.google.android.material.snackbar.Snackbar
 
 
 class LinguagemFragment : Fragment() {
+    private val permissionManager = PermissionManager.from(this)
 
     private var _binding: FragmentLinguagemBinding? = null
     private var linguagemName: String = ""
@@ -71,48 +74,53 @@ class LinguagemFragment : Fragment() {
 
 
             val telefone = binding.editTextPhone.text.trim().toString()
-            if(telefone.isNotEmpty() && telefone.isDigitsOnly() && checkPermission()){
-                val intent = Intent(Intent.ACTION_CALL, Uri.parse("tel:$telefone"))
+            if(telefone.isNotEmpty() && telefone.isDigitsOnly() ){
+                permissionManager
+                    .request(Permission.CallPhone, Permission.Storage)
+                    .rationale("We need two permissions at once!")
+                    .checkDetailedPermission { result: Map<Permission, Boolean> ->
+                        if (result.all { it.value }) {
+                            // We have all the permissions
+                            val intent = Intent(Intent.ACTION_CALL, Uri.parse("tel:$telefone"))
+                                if(intent.resolveActivity(requireActivity().packageManager) != null){
+                                    startActivity(intent)
+                                }else{
+                                    Snackbar.make(this.requireView(), "Não há programa de email configurado", Snackbar.LENGTH_SHORT).show()
+                                }
+                        } else {
+                            // Check in result which permission was denied
+                            Snackbar.make(this.requireView(), "Negado", Snackbar.LENGTH_SHORT).show()
+
+                        }
+                    }
+                /*val intent = Intent(Intent.ACTION_CALL, Uri.parse("tel:$telefone"))
                 if(intent.resolveActivity(requireActivity().packageManager) != null){
                     startActivity(intent)
                 }else{
                     Snackbar.make(this.requireView(), "Não há programa de email configurado", Snackbar.LENGTH_SHORT).show()
-                }
+                }*/
             }else{
                 binding.editTextPhone.error = "Entre com um telefone valido"
             }
 
+        }
+        binding.btShare.setOnClickListener {
+            _ ->
+            val sendIntent: Intent = Intent().apply {
+                action = Intent.ACTION_SEND
+                putExtra(Intent.EXTRA_TEXT, "Gostaria de saber mais sobre a linguagem $linguagemName")
+                type = "text/plain"
+            }
+
+            val shareIntent = Intent.createChooser(sendIntent, null)
+            startActivity(shareIntent)
         }
 
 
 
         return root
     }
-    fun checkPermission() : Boolean{
-        if (ContextCompat.checkSelfPermission(this.requireActivity(),
-                Manifest.permission.CALL_PHONE)
-            != PackageManager.PERMISSION_GRANTED) {
 
-            // Permission is not granted
-            // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this.requireActivity(),
-                    Manifest.permission.CALL_PHONE)) {
-                return false
-                // Show an explanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-            } else {
-                // No explanation needed, we can request the permission.
-                ActivityCompat.requestPermissions(this.requireActivity(),
-                    arrayOf(Manifest.permission.CALL_PHONE),
-                    42)
-                return false
-            }
-        } else {
-            // Permission has already been granted
-            return true
-        }
-    }
 
 
 

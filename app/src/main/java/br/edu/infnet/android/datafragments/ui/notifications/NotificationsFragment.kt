@@ -3,6 +3,7 @@ package br.edu.infnet.android.datafragments.ui.notifications
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.ItemTouchHelper.*
 import androidx.recyclerview.widget.RecyclerView
 import br.edu.infnet.android.datafragments.R
 import br.edu.infnet.android.datafragments.adapter.LinguagemRecyclerViewAdapter
@@ -71,17 +73,38 @@ class NotificationsFragment : Fragment() {
         linguagemList.add(LinguagemModel("Java 8", "https://img.ibxk.com.br/2014/05/08/08145827911459.png?ims=704x"))
 
         linguagemRVAdapter.notifyDataSetChanged()
-        ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
+        ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0,UP or DOWN or START or END) {
             override fun onMove(
                 recyclerView: RecyclerView,
                 viewHolder: RecyclerView.ViewHolder,
                 target: RecyclerView.ViewHolder
             ): Boolean {
-                // this method is called
-                // when the item is moved.
-                return false
+                // esse metedo é chamadi
+                // quando o item é movido
+                //the position from where item has been moved
+                val from = viewHolder.adapterPosition
+
+                //the position where the item is moved
+                val to = target.adapterPosition
+                linguagemRVAdapter.moveItemInRecyclerViewList(from, to)
+                //telling the adapter to move the item
+                linguagemRVAdapter.notifyItemMoved(from, to)
+                return true
             }
 
+            override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
+                super.onSelectedChanged(viewHolder, actionState)
+
+                if (actionState == ACTION_STATE_DRAG) {
+                    viewHolder?.itemView?.alpha = 0.5f
+                }
+            }
+
+            override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
+                super.clearView(recyclerView, viewHolder)
+
+                viewHolder.itemView.alpha = 1.0f
+            }
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 // this method is called when we swipe our item to right direction.
                 // on below line we are getting the item at a particular position.
@@ -99,9 +122,7 @@ class NotificationsFragment : Fragment() {
                 // below line is to notify our item is removed from adapter.
                 linguagemRVAdapter.notifyItemRemoved(viewHolder.adapterPosition)
 
-                // below line is to display our snackbar with action.
-                // below line is to display our snackbar with action.
-                // below line is to display our snackbar with action.
+
                 Snackbar.make(linguagemRV, "Deletado " + deletedCourse.linguagemName, Snackbar.LENGTH_LONG)
                     .setAction(
                         "Desfazer",

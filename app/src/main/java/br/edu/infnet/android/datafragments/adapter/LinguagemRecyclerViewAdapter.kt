@@ -15,6 +15,8 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import br.edu.infnet.android.datafragments.R
 import br.edu.infnet.android.datafragments.ui.notifications.NotificationsFragment
@@ -29,6 +31,34 @@ class LinguagemRecyclerViewAdapter(
     ) : RecyclerView.Adapter<LinguagemRecyclerViewAdapter.LinguagemViewHolder>() {
     val executor = Executors.newSingleThreadExecutor()
     val handler = Handler(Looper.getMainLooper())
+    private val differCallBack  = object : DiffUtil.ItemCallback<String>()
+    {
+
+        override fun areItemsTheSame(oldItem: String, newItem: String): Boolean {
+            return  oldItem.contentEquals(newItem)
+        }
+
+        override fun areContentsTheSame(oldItem: String, newItem: String): Boolean {
+            return  oldItem.contentEquals(newItem)
+        }
+
+
+    }
+    fun moveItemInRecyclerViewList(from: Int, to: Int) {
+
+        val list = differ.currentList.toMutableList()
+        val fromLocation = list[from]
+        list.removeAt(from)
+        if (to < from) {
+            //+1 because it start from 0 on the upside. otherwise it will not change the locations accordingly
+            list.add(to + 1 , fromLocation)
+        } else {
+            //-1 because it start from length + 1 on the down side. otherwise it will not change the locations accordingly
+            list.add(to - 1, fromLocation)
+        }
+        differ.submitList(list)
+    }
+    val differ = AsyncListDiffer(this, differCallBack)
     override fun onCreateViewHolder(
             parent: ViewGroup,
             viewType: Int
